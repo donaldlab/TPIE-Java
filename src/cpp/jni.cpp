@@ -39,3 +39,9 @@ jmethodID find_method_or_throw(JNIEnv * env, const jclass c, const char * name, 
 	return id;
 }
 
+
+// shared java ids
+
+define_class(byte_buffer, "java/nio/ByteBuffer");
+define_method_id(byte_buffer, array, "array", "()[B");
+

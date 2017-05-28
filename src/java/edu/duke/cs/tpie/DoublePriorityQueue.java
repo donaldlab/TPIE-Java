@@ -1,10 +1,6 @@
 package edu.duke.cs.tpie;
 
 import java.nio.ByteBuffer;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.function.Consumer;
-
-import sun.misc.Cleaner;
 
 /**
  * A priority queue whose entries have double-valued keys and ByteBuffer payloads.
@@ -14,7 +10,7 @@ import sun.misc.Cleaner;
  * 
  * @see <a href="http://madalgo.au.dk/tpie/doc/master/priority_queue.html">TPIE Priority queue example</a>
  */
-public class DoublePriorityQueue {
+public class DoublePriorityQueue extends OffHeap {
 	
 	private static native long create(int numBytes);
 	private static native void cleanup(long handle);
@@ -50,14 +46,6 @@ public class DoublePriorityQueue {
 	}
 	
 	private EntrySize entrySize;
-	private AtomicLong handle;
-	
-	private Consumer<AtomicLong> cleanup = (AtomicLong handle) -> {
-		long h = handle.getAndSet(-1);
-		if (h >= 0) {
-			cleanup(h);
-		}
-	};
 	
 	/**
 	 * Create a priority queue whose entries will be the specified size.
@@ -66,26 +54,15 @@ public class DoublePriorityQueue {
 	 * structures to set shared internal memory limits.
 	 */
 	public DoublePriorityQueue(EntrySize entrySize) {
-		
-		AtomicLong handle = new AtomicLong(create(entrySize.numBytes));
-		Cleaner.create(this, () -> cleanup.accept(handle));
-		
+		super(create(entrySize.numBytes), (handle) -> cleanup(handle));
 		this.entrySize = entrySize;
-		this.handle = handle;
-	}
-	
-	/**
-	 * Reclaim off-heap memory used by this queue.
-	 */
-	public void cleanup() {
-		cleanup.accept(handle);
 	}
 	
 	/**
 	 * Add an entry to the queue.
 	 */
 	public void push(Entry entry) {
-		push(handle.get(), entry);
+		push(getHandle(), entry);
 	}
 	
 	/**
@@ -94,7 +71,7 @@ public class DoublePriorityQueue {
 	 * Does not modify the queue.
 	 */
 	public Entry top() {
-		return top(handle.get(), this);
+		return top(getHandle(), this);
 	}
 	
 	/**
@@ -103,7 +80,7 @@ public class DoublePriorityQueue {
 	 * See {@link #top()}
 	 */
 	public void pop() {
-		pop(handle.get());
+		pop(getHandle());
 	}
 	
 	/**
@@ -112,13 +89,13 @@ public class DoublePriorityQueue {
 	 * Since TPIE queues use external memory, some of the entries may be currently residing on disk.
 	 */
 	public long size() {
-		return size(handle.get());
+		return size(getHandle());
 	}
 	
 	/**
 	 * Return true if the queue contains no entries.
 	 */
 	public boolean empty() {
-		return empty(handle.get());
+		return empty(getHandle());
 	}
 }

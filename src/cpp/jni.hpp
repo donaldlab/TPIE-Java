@@ -3,7 +3,14 @@
 #define __JNI_HPP__
 
 
-extern void throw_exception(const char * msg, ...);
+/*
+	JNI code is just terrible to deal with.
+	These macros make JNI code much easier to write,
+	but it's debatable if the resulting code is easier to read. =P
+*/
+
+
+void throw_exception(const char * msg, ...);
 
 #define try_jni_exceptions() \
 	try {
@@ -24,12 +31,16 @@ T promoteRef(JNIEnv * env, const T & ref) {
 	return (T)env->NewGlobalRef((jobject)ref);
 }
 
-extern jclass find_class_or_throw(JNIEnv * env, const char * name);
+jclass find_class_or_throw(JNIEnv * env, const char * name);
 
-extern jfieldID find_field_or_throw(JNIEnv * env, const jclass c, const char * name, const char * sig);
+jfieldID find_field_or_throw(JNIEnv * env, const jclass c, const char * name, const char * sig);
 
-extern jmethodID find_method_or_throw(JNIEnv * env, const jclass c, const char * name, const char * sig);
+jmethodID find_method_or_throw(JNIEnv * env, const jclass c, const char * name, const char * sig);
 
+
+#define declare_class(class_name) \
+	extern jclass class_##class_name; \
+	jclass get_class_##class_name(JNIEnv *);
 
 #define define_class(class_name, name) \
 	jclass class_##class_name = NULL; \
@@ -43,6 +54,10 @@ extern jmethodID find_method_or_throw(JNIEnv * env, const jclass c, const char *
 #define get_class(env, class_name) \
 	get_class_##class_name(env)
 
+
+#define declare_field_id(class_name, field_name) \
+	extern jfieldID field_##class_name##_##field_name; \
+	jfieldID get_field_##class_name##_##field_name(JINEnv *);
 
 #define define_field_id(class_name, field_name, name, sig) \
 	jfieldID field_##class_name##_##field_name = NULL; \
@@ -63,6 +78,10 @@ extern jmethodID find_method_or_throw(JNIEnv * env, const jclass c, const char *
 	env->setter(obj, get_field_id(env, class_name, field_name), val)
 
 
+#define declare_method_id(class_name, method_name) \
+	extern jmethodID method_##class_name##_##method_name; \
+	jmethodID get_method_##class_name##_##method_name(JNIEnv *);
+
 #define define_method_id(class_name, method_name, name, sig) \
 	jmethodID method_##class_name##_##method_name = NULL; \
 	jmethodID get_method_##class_name##_##method_name(JNIEnv * env) { \
@@ -82,4 +101,9 @@ extern jmethodID find_method_or_throw(JNIEnv * env, const jclass c, const char *
 	env->caller(obj, get_method_id(env, class_name, method_name), ##__VA_ARGS__)
 
 #endif
+
+
+// definitions for shared java ids
+declare_class(byte_buffer);
+declare_method_id(byte_buffer, array);
 

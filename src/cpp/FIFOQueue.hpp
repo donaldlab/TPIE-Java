@@ -7,6 +7,73 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+/*
+ * Class:     edu_duke_cs_tpie_FIFOQueue
+ * Method:    create
+ * Signature: (I)J
+ */
+JNIEXPORT jlong JNICALL Java_edu_duke_cs_tpie_FIFOQueue_create
+  (JNIEnv *, jclass, jint);
+
+/*
+ * Class:     edu_duke_cs_tpie_FIFOQueue
+ * Method:    cleanup
+ * Signature: (J)V
+ */
+JNIEXPORT void JNICALL Java_edu_duke_cs_tpie_FIFOQueue_cleanup
+  (JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     edu_duke_cs_tpie_FIFOQueue
+ * Method:    push
+ * Signature: (JLedu/duke/cs/tpie/FIFOQueue/Entry;)V
+ */
+JNIEXPORT void JNICALL Java_edu_duke_cs_tpie_FIFOQueue_push
+  (JNIEnv *, jclass, jlong, jobject);
+
+/*
+ * Class:     edu_duke_cs_tpie_FIFOQueue
+ * Method:    front
+ * Signature: (JLedu/duke/cs/tpie/FIFOQueue;)Ledu/duke/cs/tpie/FIFOQueue/Entry;
+ */
+JNIEXPORT jobject JNICALL Java_edu_duke_cs_tpie_FIFOQueue_front
+  (JNIEnv *, jclass, jlong, jobject);
+
+/*
+ * Class:     edu_duke_cs_tpie_FIFOQueue
+ * Method:    pop
+ * Signature: (J)V
+ */
+JNIEXPORT void JNICALL Java_edu_duke_cs_tpie_FIFOQueue_pop
+  (JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     edu_duke_cs_tpie_FIFOQueue
+ * Method:    size
+ * Signature: (J)J
+ */
+JNIEXPORT jlong JNICALL Java_edu_duke_cs_tpie_FIFOQueue_size
+  (JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     edu_duke_cs_tpie_FIFOQueue
+ * Method:    empty
+ * Signature: (J)Z
+ */
+JNIEXPORT jboolean JNICALL Java_edu_duke_cs_tpie_FIFOQueue_empty
+  (JNIEnv *, jclass, jlong);
+
+#ifdef __cplusplus
+}
+#endif
+#endif
+/* Header for class edu_duke_cs_tpie_FIFOQueue_Entry */
+
+#ifndef _Included_edu_duke_cs_tpie_FIFOQueue_Entry
+#define _Included_edu_duke_cs_tpie_FIFOQueue_Entry
+#ifdef __cplusplus
+extern "C" {
+#endif
 #ifdef __cplusplus
 }
 #endif

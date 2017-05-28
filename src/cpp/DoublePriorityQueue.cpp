@@ -1,5 +1,5 @@
 
-#include <vector>
+#include <cstring>
 #include <tpie/tpie.h>
 #include <tpie/priority_queue.h>
 #include "DoublePriorityQueue.hpp"
@@ -130,14 +130,12 @@ IDoublePriorityQueue * IDoublePriorityQueue::make(const uint32_t & num_bytes) {
 
 // java ids
 
-define_class(entry, "edu/duke/cs/tpie/DoublePriorityQueue$Entry");
-define_class(byte_buffer, "java/nio/ByteBuffer");
+define_class(dpq_entry, "edu/duke/cs/tpie/DoublePriorityQueue$Entry");
 
-define_field_id(entry, priority, "priority", "D");
-define_field_id(entry, data, "data", "Ljava/nio/ByteBuffer;");
+define_field_id(dpq_entry, priority, "priority", "D");
+define_field_id(dpq_entry, data, "data", "Ljava/nio/ByteBuffer;");
 
-define_method_id(entry, ctor, "<init>", "(Ledu/duke/cs/tpie/DoublePriorityQueue;)V");
-define_method_id(byte_buffer, array, "array", "()[B");
+define_method_id(dpq_entry, ctor, "<init>", "(Ledu/duke/cs/tpie/DoublePriorityQueue;)V");
 
 
 // java methods
@@ -177,14 +175,14 @@ JNIEXPORT void JNICALL Java_edu_duke_cs_tpie_DoublePriorityQueue_push(
 	try_jni_exceptions();
 
 	// get the jentry bytes
-	jobject jbuf = get_field(env, entry, data, GetObjectField, jentry);
+	jobject jbuf = get_field(env, dpq_entry, data, GetObjectField, jentry);
 	jbyteArray jbufArray = (jbyteArray)call_method(env, byte_buffer, array, CallObjectMethod, jbuf);
 	jbyte * jbufBytes = env->GetByteArrayElements(jbufArray, NULL);
 
 	// push to the queue
 	IDoublePriorityQueue & q = *IDoublePriorityQueue::from_handle(handle);
 	q.push(
-		get_field(env, entry, priority, GetDoubleField, jentry),
+		get_field(env, dpq_entry, priority, GetDoubleField, jentry),
 		(uint8_t *)jbufBytes
 	);
 
@@ -206,13 +204,13 @@ JNIEXPORT jobject JNICALL Java_edu_duke_cs_tpie_DoublePriorityQueue_top(
 	IDoublePriorityQueue & q = *IDoublePriorityQueue::from_handle(handle);
 
 	// make the jentry and get the bytes
-	jobject jentry = new_class(env, entry, ctor, jqueue);
-	jobject jbuf = get_field(env, entry, data, GetObjectField, jentry);
+	jobject jentry = new_class(env, dpq_entry, ctor, jqueue);
+	jobject jbuf = get_field(env, dpq_entry, data, GetObjectField, jentry);
 	jbyteArray jbufArray = (jbyteArray)call_method(env, byte_buffer, array, CallObjectMethod, jbuf);
 	jbyte * jbufBytes = env->GetByteArrayElements(jbufArray, NULL);
 
 	// convert entry
-	set_field(env, entry, priority, SetDoubleField, jentry, (jdouble)q.top_priority());
+	set_field(env, dpq_entry, priority, SetDoubleField, jentry, (jdouble)q.top_priority());
 	std::memcpy((uint8_t *)jbufBytes, q.top_bytes(), q.get_num_bytes());
 
 	// jni cleanup

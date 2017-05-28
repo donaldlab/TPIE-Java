@@ -51,6 +51,7 @@ public class Build extends JkJavaBuild {
 			
 			// runtime dependencies
 			.on("commons-io:commons-io:2.5")
+			.on("org.apache.commons:commons-collections4:4.1")
 			
 			.build();
 	}

@@ -18,11 +18,12 @@ LDFLAGS = -pthread $(TPIE_DIR)/build/tpie/libtpie.a -lboost_filesystem -lboost_t
 
 all: lib
 
-lib: jni TPIE DoublePriorityQueue
+lib: jni TPIE DoublePriorityQueue FIFOQueue
 	$(CPP) -o $(BUILD_DIR)/lib$(OUT_NAME).so -shared \
 		$(BUILD_DIR)/jni.a \
 		$(BUILD_DIR)/TPIE.a \
 		$(BUILD_DIR)/DoublePriorityQueue.a \
+		$(BUILD_DIR)/FIFOQueue.a \
 		$(LDFLAGS)
 	mv $(BUILD_DIR)/lib$(OUT_NAME).so $(RESOURCES_DIR)/
 
@@ -34,6 +35,9 @@ TPIE:
 
 DoublePriorityQueue:
 	$(CPP) $(CPPFLAGS) -o $(BUILD_DIR)/DoublePriorityQueue.a -c $(CPP_SRC_DIR)/DoublePriorityQueue.cpp
+
+FIFOQueue:
+	$(CPP) $(CPPFLAGS) -o $(BUILD_DIR)/FIFOQueue.a -c $(CPP_SRC_DIR)/FIFOQueue.cpp
 	
 javah:
 	javah -cp $(JAVA_CLASS_DIR) -o $(CPP_SRC_DIR)/TPIE.hpp $(JAVA_PACKAGE).TPIE

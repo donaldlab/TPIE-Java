@@ -230,7 +230,11 @@ JNIEXPORT void JNICALL Java_edu_duke_cs_tpie_DoublePriorityQueue_pop(
 	try_jni_exceptions();
 
 	IDoublePriorityQueue & q = *IDoublePriorityQueue::from_handle(handle);
-	q.pop();
+	try {
+		q.pop();
+	} catch (tpie::end_of_stream_exception ex) {
+		throw_exception("end of stream");
+	}
 
 	catch_jni_exceptions(env);
 }

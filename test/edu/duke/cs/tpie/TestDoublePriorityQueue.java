@@ -120,4 +120,11 @@ public class TestDoublePriorityQueue extends TestBase {
 			}
 		}
 	}
+	
+	@Test(expected=Exception.class)
+	public void empty() {
+		try (FIFOQueue q = new FIFOQueue(EntrySize.Bytes8)) {
+			q.pop();
+		}
+	}
 }

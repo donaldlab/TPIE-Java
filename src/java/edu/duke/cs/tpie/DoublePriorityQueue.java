@@ -45,7 +45,10 @@ public class DoublePriorityQueue extends OffHeap {
 		}
 	}
 	
-	private EntrySize entrySize;
+	/**
+	 * Size of the entries in this queue.
+	 */
+	public final EntrySize entrySize;
 	
 	/**
 	 * Create a priority queue whose entries will be the specified size.

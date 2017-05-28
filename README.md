@@ -62,41 +62,88 @@ Eventually, we can host a maven repo for TPIE-Java which will let your build too
  * [commons-io:commons-io:2.5](http://search.maven.org/remotecontent?filepath=commons-io/commons-io/2.5/commons-io-2.5.jar)
  * [org.apache.commons:commons-collections4:4.1](http://search.maven.org/remotecontent?filepath=org/apache/commons/commons-collections4/4.1/commons-collections4-4.1.jar)
 
-Then the following code snippet shows how to use the double priority queue.
+
+### Raw queues
+
+The following code snippet shows how to use the double priority queue.
 
 ```java
-import edu.duke.cs.tpie.TPIE;
-import edu.duke.cs.tpie.DoublePriorityQueue;
-import edu.duke.cs.tpie.DoublePriorityQueue.Entry;
+// initialize TPIE and set the internal memory limit in MiB.
+TPIE.start(128);
 
-public class HelloWorld {
+// create a priority queue with a payload size of 8 bytes,
+// but do it in a try-with-resources block.
+// TPIE-Java objects use off-heap memory that needs to be
+// explicitly cleaned up when we're done using them.
+try (DoublePriorityQueue q = new DoublePriorityQueue(EntrySize.Bytes8)) {
+    
+    // add an entry to the queue
+    Entry entry = q.new Entry();
+    entry.priority = 5.0;
+    entry.data.putLong(42);
+    q.push(entry);
+    
+    // read it back
+    Entry entryAgain = q.top();
+    assert (entryAgain.priority == 5.0);
+    assert (entryAgain.data.getLong() == 42);
+    
+    // pop the queue
+    q.pop();
+}
+```
 
-    public static void main(String[] args) {
-        
-        // initialize TPIE and set the internal memory limit in MiB.
-        TPIE.start(128);
-        
-        // create a priority queue with a payload size of 8 bytes,
-        // but do it in a try-with-resources block.
-        // TPIE-Java objects use off-heap memory that needs to be
-        // explicitly cleaned up when we're done using them.
-        try (DoublePriorityQueue q = new DoublePriorityQueue(EntrySize.Bytes8)) {
-            
-            // add an entry to the queue
-            Entry entry = q.new Entry();
-            entry.priority = 5.0;
-            entry.data.putLong(42);
-            q.push(entry);
-            
-            // read it back
-            Entry entryAgain = q.top();
-            assert (entryAgain.priority == 5.0);
-            assert (entryAgain.data.getLong() == 42);
-            
-            // pop the queue
-            q.pop();
-        }
-    }
+
+### Serializing queues
+
+The following code snippet shows how to use the serializing double priority queue with a custom `Thing` type and a custom `Serializer`.
+
+```java
+class Thing {
+	
+	public final double priority;
+	public final long num;
+	
+	public Thing(double priority, long num) {
+		this.priority = priority;
+		this.num = num;
+	}
+}
+
+Serializer<Thing> serializer = new Serializer<Thing>() {
+
+	@Override
+	public EntrySize getEntrySize() {
+		return EntrySize.Bytes8;
+	}
+
+	@Override
+	public double serialize(Thing val, ByteBuffer buf) {
+		buf.putLong(val.num);
+		return val.priority;
+	}
+
+	@Override
+	public Thing deserialize(double priority, ByteBuffer buf) {
+		return new Thing(priority, buf.getLong());
+	}
+};
+
+try (SerializingDoublePriorityQueue<Thing> q = new SerializingDoublePriorityQueue<>(serializer)) {
+
+	q.push(new Thing(4.2, 0));
+	q.push(new Thing(0.1, 5));
+	q.push(new Thing(9.9, Long.MIN_VALUE));
+	q.push(new Thing(5.0, Long.MAX_VALUE));
+	
+	assert(q.top().priority == 0.1);
+	q.pop();
+	assert(q.top().priority == 4.2);
+	q.pop();
+	assert(q.top().priority == 5.0;
+	q.pop();
+	assert(q.top().priority == 9.9);
+	q.pop();
 }
 ```
 

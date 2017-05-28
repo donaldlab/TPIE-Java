@@ -25,4 +25,13 @@ public enum EntrySize {
 	private EntrySize(int numBytes) {
 		this.numBytes = numBytes;
 	}
+	
+	public static EntrySize findBigEnoughSizeFor(int numBytes) {
+		for (EntrySize size : EntrySize.values()) {
+			if (size.numBytes >= numBytes) {
+				return size;
+			}
+		}
+		return null;
+	}
 }

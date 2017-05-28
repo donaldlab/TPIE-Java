@@ -57,7 +57,12 @@ Downloads can be found on the [Releases][releases] page.
 
 [Download][releases] the latest jar and add it to your project's classpath. Adding the `javadoc` and `sources` jars to your IDE can also be helpful.
 
-The following code snippet shows how to use the double priority queue.
+Eventually, we can host a maven repo for TPIE-Java which will let your build tool (e.g., Jerkar, Maven, Gradle) handle depedencies automatically, but for now, you'll have to add the dependencies to your classpath manually:
+
+ * [commons-io:commons-io:2.5](http://search.maven.org/remotecontent?filepath=commons-io/commons-io/2.5/commons-io-2.5.jar)
+ * [org.apache.commons:commons-collections4:4.1](http://search.maven.org/remotecontent?filepath=org/apache/commons/commons-collections4/4.1/commons-collections4-4.1.jar)
+
+Then the following code snippet shows how to use the double priority queue.
 
 ```java
 import edu.duke.cs.tpie.TPIE;
@@ -71,13 +76,11 @@ public class HelloWorld {
         // initialize TPIE and set the internal memory limit in MiB.
         TPIE.start(128);
         
-        // create a priority queue in a try/finally block.
+        // create a priority queue with a payload size of 8 bytes,
+        // but do it in a try-with-resources block.
         // TPIE-Java objects use off-heap memory that needs to be
         // explicitly cleaned up when we're done using them.
-        try {
-            
-            // create the queue with a fixed entry size of 8 bytes
-            DoublePriorityQueue q = new DoublePriorityQueue(EntrySize.Bytes8);
+        try (DoublePriorityQueue q = new DoublePriorityQueue(EntrySize.Bytes8)) {
             
             // add an entry to the queue
             Entry entry = q.new Entry();
@@ -92,9 +95,6 @@ public class HelloWorld {
             
             // pop the queue
             q.pop();
-            
-        } finally {
-            q.cleanup();
         }
     }
 }
@@ -133,7 +133,8 @@ $ make
 ```
 The compiled `tpie-java.so` should appear in `build/natives`.
 
-If you don't meet the prerequisites, I'm sure using a real C++ build system could make this process much easier. Contributions are welcome!
+If you don't meet the prerequisites, you can try editing the settings at the top of the Makefile until it works?
+I'm sure using a real C++ build system could make this process much easier though. Contributions are welcome!
 
 
 ### Java side

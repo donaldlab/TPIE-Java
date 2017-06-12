@@ -177,7 +177,9 @@ JNIEXPORT void JNICALL Java_edu_duke_cs_tpie_DoublePriorityQueue_push(
 	// get the jentry bytes
 	jobject jbuf = get_field(env, dpq_entry, data, GetObjectField, jentry);
 	jbyteArray jbufArray = (jbyteArray)call_method(env, byte_buffer, array, CallObjectMethod, jbuf);
+	check_jni_exception(env);
 	jbyte * jbufBytes = env->GetByteArrayElements(jbufArray, NULL);
+	check_jni_exception(env);
 
 	// push to the queue
 	IDoublePriorityQueue & q = *IDoublePriorityQueue::from_handle(handle);
@@ -185,9 +187,11 @@ JNIEXPORT void JNICALL Java_edu_duke_cs_tpie_DoublePriorityQueue_push(
 		get_field(env, dpq_entry, priority, GetDoubleField, jentry),
 		(uint8_t *)jbufBytes
 	);
+	check_jni_exception(env);
 
 	// jni cleanup
 	env->ReleaseByteArrayElements(jbufArray, jbufBytes, JNI_ABORT);
+	check_jni_exception(env);
 
 	catch_jni_exceptions(env);
 }
@@ -206,15 +210,20 @@ JNIEXPORT jobject JNICALL Java_edu_duke_cs_tpie_DoublePriorityQueue_top(
 	// make the jentry and get the bytes
 	jobject jentry = new_class(env, dpq_entry, ctor, jqueue);
 	jobject jbuf = get_field(env, dpq_entry, data, GetObjectField, jentry);
+	check_jni_exception(env);
 	jbyteArray jbufArray = (jbyteArray)call_method(env, byte_buffer, array, CallObjectMethod, jbuf);
+	check_jni_exception(env);
 	jbyte * jbufBytes = env->GetByteArrayElements(jbufArray, NULL);
+	check_jni_exception(env);
 
 	// convert entry
 	set_field(env, dpq_entry, priority, SetDoubleField, jentry, (jdouble)q.top_priority());
+	check_jni_exception(env);
 	std::memcpy((uint8_t *)jbufBytes, q.top_bytes(), q.get_num_bytes());
 
 	// jni cleanup
-	env->ReleaseByteArrayElements(jbufArray, jbufBytes, JNI_COMMIT);
+	env->ReleaseByteArrayElements(jbufArray, jbufBytes, 0);
+	check_jni_exception(env);
 
 	return jentry;
 

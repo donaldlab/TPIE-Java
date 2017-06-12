@@ -10,26 +10,23 @@
 */
 
 
+class JNIExceptionSignal {};
+
+
 void throw_exception(const char * msg, ...);
+void check_jni_exception(JNIEnv *env);
 
 #define try_jni_exceptions() \
 	try {
 
 # define catch_jni_exceptions(env) \
+	} catch (JNIExceptionSignal *ex) { \
+		delete ex; \
 	} catch (char * msg) { \
 		env->ThrowNew(env->FindClass("java/lang/Exception"), msg); \
 		delete[] msg; \
 	}
 
-
-template <typename T>
-T promoteRef(JNIEnv * env, const T & ref) {
-	// "promote" the ref to a global ref,
-	// so the JVM doesn't delete it before the next call
-	// technically, we should free these with DeleteGLobalRef,
-	// but I just don't care... we'll leak them. what's the worst that can happen? =P
-	return (T)env->NewGlobalRef((jobject)ref);
-}
 
 jclass find_class_or_throw(JNIEnv * env, const char * name);
 

@@ -127,4 +127,22 @@ public class TestDoublePriorityQueue extends TestBase {
 			q.pop();
 		}
 	}
+	
+	// this test can do bad things to your computer when it fails
+	// only run it if you're closely monitoring the process
+	// and can kill it if things get out of hand
+	@Test
+	public void checkForMemoryLeaks() {
+		try (DoublePriorityQueue q = new DoublePriorityQueue(EntrySize.Bytes256)) {
+			
+			// do this a lot
+			for (long i=0; i<4e6; i++) {
+				
+				// push an entry, check it, then pop
+				q.push(q.new Entry());
+				q.top();
+				q.pop();
+			}
+		}
+	}
 }

@@ -138,8 +138,11 @@ JNIEXPORT void JNICALL Java_edu_duke_cs_tpie_FIFOQueue_push(
 
 	// get the jentry bytes
 	jobject jbuf = get_field(env, fifoq_entry, data, GetObjectField, jentry);
+	check_jni_exception(env);
 	jbyteArray jbufArray = (jbyteArray)call_method(env, byte_buffer, array, CallObjectMethod, jbuf);
+	check_jni_exception(env);
 	jbyte * jbufBytes = env->GetByteArrayElements(jbufArray, NULL);
+	check_jni_exception(env);
 
 	// push to the queue
 	IFIFOQueue & q = *IFIFOQueue::from_handle(handle);
@@ -147,6 +150,7 @@ JNIEXPORT void JNICALL Java_edu_duke_cs_tpie_FIFOQueue_push(
 
 	// jni cleanup
 	env->ReleaseByteArrayElements(jbufArray, jbufBytes, JNI_ABORT);
+	check_jni_exception(env);
 
 	catch_jni_exceptions(env);
 }
@@ -165,14 +169,18 @@ JNIEXPORT jobject JNICALL Java_edu_duke_cs_tpie_FIFOQueue_front(
 	// make the jentry and get the bytes
 	jobject jentry = new_class(env, fifoq_entry, ctor, jqueue);
 	jobject jbuf = get_field(env, fifoq_entry, data, GetObjectField, jentry);
+	check_jni_exception(env);
 	jbyteArray jbufArray = (jbyteArray)call_method(env, byte_buffer, array, CallObjectMethod, jbuf);
+	check_jni_exception(env);
 	jbyte * jbufBytes = env->GetByteArrayElements(jbufArray, NULL);
+	check_jni_exception(env);
 
 	// convert entry
 	std::memcpy((uint8_t *)jbufBytes, q.front(), q.get_num_bytes());
 
 	// jni cleanup
-	env->ReleaseByteArrayElements(jbufArray, jbufBytes, JNI_COMMIT);
+	env->ReleaseByteArrayElements(jbufArray, jbufBytes, 0);
+	check_jni_exception(env);
 
 	return jentry;
 

@@ -61,4 +61,27 @@ public class TPIE {
 			}
 		});
 	}
+	
+	/**
+	 * Set temporary directory path
+	 * 
+	 * @param dir
+	 */
+	public static void setTempDir(String dir) {
+		setTempDir(dir, null);
+	}
+	
+	/**
+	 * Set temporary directory path of the form dir/subdir.
+	 * subdir will be created within dir if necessary.
+	 * 
+	 * @param dir
+	 * @param subdir
+	 */
+	public static native void setTempDir(String dir, String subdir);
+	
+	/**
+	 * Get the total number of bytes currently used in temporary storage.
+	 */
+	public static native long getExternalBytes();
 }

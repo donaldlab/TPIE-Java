@@ -23,6 +23,22 @@ JNIEXPORT void JNICALL Java_edu_duke_cs_tpie_TPIE_init
 JNIEXPORT void JNICALL Java_edu_duke_cs_tpie_TPIE_cleanup
   (JNIEnv *, jclass);
 
+/*
+ * Class:     edu_duke_cs_tpie_TPIE
+ * Method:    setTempDir
+ * Signature: (Ljava/lang/String;Ljava/lang/String;)V
+ */
+JNIEXPORT void JNICALL Java_edu_duke_cs_tpie_TPIE_setTempDir
+  (JNIEnv *, jclass, jstring, jstring);
+
+/*
+ * Class:     edu_duke_cs_tpie_TPIE
+ * Method:    getExternalBytes
+ * Signature: ()J
+ */
+JNIEXPORT jlong JNICALL Java_edu_duke_cs_tpie_TPIE_getExternalBytes
+  (JNIEnv *, jclass);
+
 #ifdef __cplusplus
 }
 #endif

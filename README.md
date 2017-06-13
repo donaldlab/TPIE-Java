@@ -50,7 +50,7 @@ Supporting other sizes is possible with modifications to the native library with
 
 Downloads can be found on the [Releases][releases] page.
 
-[releases]: TPIE-Java/releases
+[releases]: /donaldlab/TPIE-Java/releases
 
 
 ## Getting started

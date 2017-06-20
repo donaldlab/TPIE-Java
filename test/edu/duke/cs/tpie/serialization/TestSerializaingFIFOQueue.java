@@ -43,27 +43,29 @@ public class TestSerializaingFIFOQueue extends TestBase {
 			}
 		};
 		
-		try (SerializingFIFOQueue<Thing> q = new SerializingFIFOQueue<>(serializer)) {
-		
-			q.push(new Thing(0));
-			q.push(new Thing(5));
-			q.push(new Thing(Long.MIN_VALUE));
-			q.push(new Thing(Long.MAX_VALUE));
+		useTPIE(() -> {
+			try (SerializingFIFOQueue<Thing> q = new SerializingFIFOQueue<>(serializer)) {
 			
-			assertThat(q.empty(), is(false));
-			assertThat(q.size(), is(4L));
-			
-			assertThat(q.front().num, is(0L));
-			q.pop();
-			assertThat(q.front().num, is(5L));
-			q.pop();
-			assertThat(q.front().num, is(Long.MIN_VALUE));
-			q.pop();
-			assertThat(q.front().num, is(Long.MAX_VALUE));
-			q.pop();
-			
-			assertThat(q.empty(), is(true));
-			assertThat(q.size(), is(0L));
-		}
+				q.push(new Thing(0));
+				q.push(new Thing(5));
+				q.push(new Thing(Long.MIN_VALUE));
+				q.push(new Thing(Long.MAX_VALUE));
+				
+				assertThat(q.empty(), is(false));
+				assertThat(q.size(), is(4L));
+				
+				assertThat(q.front().num, is(0L));
+				q.pop();
+				assertThat(q.front().num, is(5L));
+				q.pop();
+				assertThat(q.front().num, is(Long.MIN_VALUE));
+				q.pop();
+				assertThat(q.front().num, is(Long.MAX_VALUE));
+				q.pop();
+				
+				assertThat(q.empty(), is(true));
+				assertThat(q.size(), is(0L));
+			}
+		});
 	}
 }

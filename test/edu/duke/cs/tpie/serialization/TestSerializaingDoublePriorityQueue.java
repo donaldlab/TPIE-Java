@@ -46,34 +46,36 @@ public class TestSerializaingDoublePriorityQueue extends TestBase {
 			}
 		};
 		
-		try (SerializingDoublePriorityQueue<Thing> q = new SerializingDoublePriorityQueue<>(serializer)) {
-		
-			q.push(new Thing(4.2, 0));
-			q.push(new Thing(0.1, 5));
-			q.push(new Thing(9.9, Long.MIN_VALUE));
-			q.push(new Thing(5.0, Long.MAX_VALUE));
+		useTPIE(() -> {
+			try (SerializingDoublePriorityQueue<Thing> q = new SerializingDoublePriorityQueue<>(serializer)) {
 			
-			assertThat(q.empty(), is(false));
-			assertThat(q.size(), is(4L));
-			
-			assertThat(q.top().priority, is(0.1));
-			assertThat(q.top().num, is(5L));
-			q.pop();
-			
-			assertThat(q.top().priority, is(4.2));
-			assertThat(q.top().num, is(0L));
-			q.pop();
-			
-			assertThat(q.top().priority, is(5.0));
-			assertThat(q.top().num, is(Long.MAX_VALUE));
-			q.pop();
-			
-			assertThat(q.top().priority, is(9.9));
-			assertThat(q.top().num, is(Long.MIN_VALUE));
-			q.pop();
-			
-			assertThat(q.empty(), is(true));
-			assertThat(q.size(), is(0L));
-		}
+				q.push(new Thing(4.2, 0));
+				q.push(new Thing(0.1, 5));
+				q.push(new Thing(9.9, Long.MIN_VALUE));
+				q.push(new Thing(5.0, Long.MAX_VALUE));
+				
+				assertThat(q.empty(), is(false));
+				assertThat(q.size(), is(4L));
+				
+				assertThat(q.top().priority, is(0.1));
+				assertThat(q.top().num, is(5L));
+				q.pop();
+				
+				assertThat(q.top().priority, is(4.2));
+				assertThat(q.top().num, is(0L));
+				q.pop();
+				
+				assertThat(q.top().priority, is(5.0));
+				assertThat(q.top().num, is(Long.MAX_VALUE));
+				q.pop();
+				
+				assertThat(q.top().priority, is(9.9));
+				assertThat(q.top().num, is(Long.MIN_VALUE));
+				q.pop();
+				
+				assertThat(q.empty(), is(true));
+				assertThat(q.size(), is(0L));
+			}
+		});
 	}
 }

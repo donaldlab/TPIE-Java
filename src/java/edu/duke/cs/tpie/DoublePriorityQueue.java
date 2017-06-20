@@ -65,6 +65,7 @@ public class DoublePriorityQueue extends OffHeap {
 	 * Add an entry to the queue.
 	 */
 	public void push(Entry entry) {
+		checkClosed();
 		push(getHandle(), entry);
 	}
 	
@@ -74,6 +75,7 @@ public class DoublePriorityQueue extends OffHeap {
 	 * Does not modify the queue.
 	 */
 	public Entry top() {
+		checkClosed();
 		return top(getHandle(), this);
 	}
 	
@@ -83,6 +85,7 @@ public class DoublePriorityQueue extends OffHeap {
 	 * See {@link #top()}
 	 */
 	public void pop() {
+		checkClosed();
 		pop(getHandle());
 	}
 	
@@ -92,6 +95,7 @@ public class DoublePriorityQueue extends OffHeap {
 	 * Since TPIE queues use external memory, some of the entries may be currently residing on disk.
 	 */
 	public long size() {
+		checkClosed();
 		return size(getHandle());
 	}
 	
@@ -99,6 +103,7 @@ public class DoublePriorityQueue extends OffHeap {
 	 * Return true if the queue contains no entries.
 	 */
 	public boolean empty() {
+		checkClosed();
 		return empty(getHandle());
 	}
 }

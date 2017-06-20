@@ -54,6 +54,7 @@ public class FIFOQueue extends OffHeap {
 	 * Add an entry to the queue.
 	 */
 	public void push(Entry entry) {
+		checkClosed();
 		push(getHandle(), entry);
 	}
 	
@@ -63,6 +64,7 @@ public class FIFOQueue extends OffHeap {
 	 * Does not modify the queue.
 	 */
 	public Entry front() {
+		checkClosed();
 		return front(getHandle(), this);
 	}
 	
@@ -72,6 +74,7 @@ public class FIFOQueue extends OffHeap {
 	 * See {@link #front()}
 	 */
 	public void pop() {
+		checkClosed();
 		pop(getHandle());
 	}
 	
@@ -81,6 +84,7 @@ public class FIFOQueue extends OffHeap {
 	 * Since TPIE queues use external memory, some of the entries may be currently residing on disk.
 	 */
 	public long size() {
+		checkClosed();
 		return size(getHandle());
 	}
 	
@@ -88,6 +92,7 @@ public class FIFOQueue extends OffHeap {
 	 * Return true if the queue contains no entries.
 	 */
 	public boolean empty() {
+		checkClosed();
 		return empty(getHandle());
 	}
 }

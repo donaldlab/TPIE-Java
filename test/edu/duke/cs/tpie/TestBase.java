@@ -1,12 +1,9 @@
 package edu.duke.cs.tpie;
 
-import org.junit.BeforeClass;
-
 public class TestBase {
 	
-	@BeforeClass
-	public static void beforeClass() {
-		TPIE.start(16);
+	protected static void useTPIE(TPIE.Block block) {
+		TPIE.use(16, block);
 	}
 	
 	protected static void doGC() {
@@ -24,7 +21,7 @@ public class TestBase {
 		}
 	}
 	
-	protected void assertCleanedUp() {
+	protected static void assertCleanedUp() {
 		// then try to make another queue
 		// if we didn't cleanup everything before, this will fail
 		// because we'll be out of internal memory available to TPIE

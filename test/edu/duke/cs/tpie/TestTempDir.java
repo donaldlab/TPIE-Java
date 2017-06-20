@@ -18,30 +18,37 @@ public class TestTempDir extends TestBase {
 	
 	@Test
 	public void setDir() {
-		TPIE.setTempDir("/tmp");
+		useTPIE(() -> {
+			TPIE.setTempDir("/tmp");
+		});
 	}
 	
 	@Test
 	public void setSubdir()
 	throws IOException {
+		useTPIE(() -> {
 		
-		// pick a random name for the subdir
-		String subdirName = "tpie-test-" + Math.abs(new Random().nextInt());
+			// pick a random name for the subdir
+			String subdirName = "tpie-test-" + Math.abs(new Random().nextInt());
 
-		// and make sure it doesn't exist
-		Path subdir = Paths.get("/tmp", subdirName);
-		deleteDir(subdir);
-		
-		try {
-			
-			TPIE.setTempDir("/tmp", subdirName);
-			
-			// it should exist now
-			assertThat(Files.exists(subdir), is(true));
-			
-		} finally {
+			// and make sure it doesn't exist
+			Path subdir = Paths.get("/tmp", subdirName);
 			deleteDir(subdir);
-		}
+			
+			try {
+				
+				TPIE.setTempDir("/tmp", subdirName);
+				
+				// it should exist now
+				assertThat(Files.exists(subdir), is(true));
+				
+			} finally {
+				deleteDir(subdir);
+				
+				// put the temp dir back, so subsequent tests don't fail
+				TPIE.setTempDir("/tmp");
+			}
+		});
 	}
 	
 	private void deleteDir(Path dir)

@@ -57,9 +57,48 @@ public class TPIE {
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			@Override
 			public void run() {
-				cleanup();
+				TPIE.stop();
 			}
 		});
+	}
+	
+	/**
+	 * Stop the TPIE library and let it clean up any unused resources.
+	 * <p>
+	 * Under normal circumstances, this will be automatically called with the JVM shuts down
+	 * and you won't need to call it manually.
+	 * <p>
+	 * You can call it manually though if you want to cleanup TPIE before the JVM shuts down,
+	 * or if for some reason the JVM shutdown hooks aren't operating (e.g., in a JPype environment).
+	 */
+	public static void stop() {
+		if (isStarted) {
+			isStarted = false;
+			OffHeap.cleanAll();
+			cleanup();
+		}
+	}
+	
+	public static interface Block {
+		void run() throws Exception;
+	}
+	
+	/**
+	 * Convenience method to initialize TPIE, run a block of code, and then make sure TPIE
+	 * is cleaned up before returning.
+	 * 
+	 * @param internalMiB internalMiB Size of the internal memory (in MiB) to reserve exclusively for TPIE.
+	 * @param block A block of code to run using TPIE.
+	 */
+	public static void use(int internalMiB, Block block) {
+		TPIE.start(internalMiB);
+		try {
+			block.run();
+		} catch (Exception ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			TPIE.stop();
+		}
 	}
 	
 	/**

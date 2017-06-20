@@ -33,7 +33,7 @@ public class Build extends JkJavaBuild {
 	
 	@Override
 	public JkVersion version() {
-		return JkVersion.name("1.0");
+		return JkVersion.name("1.1");
 	}
 
 	@Override

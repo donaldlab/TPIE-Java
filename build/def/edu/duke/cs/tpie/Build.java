@@ -73,6 +73,9 @@ public class Build extends JkJavaBuild {
 	
 	@Override
 	protected JkJavaPacker createPacker() {
+		// TODO: find out how to exclude tpie-java.so from the sources jar
+		// TODO: find out how to get the javadoc jar to have the verison name
+		// which means these things need to be done manually before publishing a release
 		return JkJavaPacker.builder(this)
 			.includeVersion(true)
 			.doJar(true)
